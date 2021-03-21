@@ -1691,6 +1691,16 @@ int RM_ReplyWithLongDouble(RedisModuleCtx *ctx, long double ld) {
     return REDISMODULE_OK;
 }
 
+/* Reply to the client with the same reply as HGETALL.
+ *
+ * The function always returns REDISMODULE_OK. */
+int RM_ReplyWithHash(RedisModuleCtx *ctx, RedisModuleKey *key) {
+    if (key->value && key->value->type != OBJ_HASH) return REDISMODULE_ERR;
+    client *c = moduleGetReplyClient(ctx);
+    genericHgetallCommand(c,OBJ_HASH_KEY|OBJ_HASH_VALUE);
+    return REDISMODULE_OK;
+}
+
 /* --------------------------------------------------------------------------
  * Commands replication API
  * -------------------------------------------------------------------------- */
